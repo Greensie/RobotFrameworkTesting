@@ -1,5 +1,11 @@
 Language: En
 
+*** Keywords ***
+Login
+    Input Text    id=user-name    ${name}
+    Input Password    id=password    ${password}
+    Click Button    id=login-button
+
 *** Variables ***
 ${url}            https://www.saucedemo.com
 ${name}           standard_user
@@ -42,3 +48,9 @@ TC_005_Login_Dict
     Click Button    id=login-button
     Close Browser
     Log To Console    %{username} ran this on %{os}
+
+TC_006_Login_Keyword
+    [Tags]    Login
+    Open Browser    ${url}    edge
+    Login
+    Close Browser
