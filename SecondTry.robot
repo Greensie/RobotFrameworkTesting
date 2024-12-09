@@ -6,6 +6,9 @@ Login
     Input Password    id=password    ${password}
     Click Button    id=login-button
 
+GoToHomePage
+    Open Browser    ${url}    edge
+
 *** Variables ***
 ${url}            https://www.saucedemo.com
 ${name}           standard_user
@@ -14,6 +17,8 @@ ${password}       secret_sauce
 &{LOGIN}          Username=standard_user    Password=secret_sauce
 
 *** Settings ***
+Suite Setup       GoToHomePage
+Suite Teardown    Close All Browsers
 Library           SeleniumLibrary
 
 *** Test Cases ***
@@ -51,6 +56,14 @@ TC_005_Login_Dict
 
 TC_006_Login_Keyword
     [Tags]    Login
+    [Setup]    Log To Console    TC_006 Started
     Open Browser    ${url}    edge
     Login
     Close Browser
+    [Teardown]    Log To Console    TC_006 Completed
+
+TC_007_Login_SetupAndTeardown
+    [Tags]    Login
+    [Setup]    Log To Console    TC_007 Started
+    Login
+    [Teardown]    Log To Console    TC_007 Completed
