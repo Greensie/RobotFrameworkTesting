@@ -11,7 +11,7 @@ Login
 
 Logout
     Click Element    id=react-burger-menu-btn
-    Sleep    1 seconds
+    Sleep    100 ms
     Click Element    id=logout_sidebar_link
 
 LoginBadUser
@@ -28,16 +28,16 @@ LoginAllGoodUsers
         Input Password    id=password    ${password}
         Click Button    id=login-button
         Click Element    id=react-burger-menu-btn
-        Sleep    1 seconds
+        Sleep    100 ms
         Click Element    id=logout_sidebar_link
-        Sleep    3 seconds
+        Sleep    300 ms
     END
 
 AddTestItemToCart
     Click Button    id=add-to-cart-sauce-labs-backpack
-    Sleep    1 second
+    Sleep    100 ms
     Click Element    id=shopping_cart_container
-    Sleep    1 second
+    Sleep    100 ms
     Click Button    id=remove-sauce-labs-backpack
 
 *** Variables ***
@@ -48,9 +48,10 @@ ${password}       secret_sauce
 &{LOGIN}          Username=standard_user    Password=secret_sauce
 ${bad_user}       locked_out_user
 @{browsers}       edge    chrome
-@{items_add}      id=add-to-cart-sauce-labs-backpack    id=add-to-cart-sauce-labs-bike-light    id=add-to-cart-sauce-labs-bolt-t-shirt    id=add-to-cart-sauce-labs-fleece-jacket    id=add-to-cart-sauce-labs-onesie
+@{items_add}      id=add-to-cart-sauce-labs-backpack    id=add-to-cart-sauce-labs-bike-light    id=add-to-cart-sauce-labs-bolt-t-shirt    id=add-to-cart-sauce-labs-fleece-jacket    id=add-to-cart-sauce-labs-onesie    id=add-to-cart-test.allthethings()-t-shirt-(red)
 @{items_remove}    id=remove-sauce-labs-backpack    id=remove-sauce-labs-bike-light    id=remove-sauce-labs-onesie    id=remove-sauce-labs-bolt-t-shirt    id=remove-sauce-labs-fleece-jacket
 @{TestUser}       John    Doe    00-999
+@{imagesid}       id=item_0_img_link    id=item_1_img_link    id=item_2_img_link    id=item_3_img_link    id=item_4_img_link    id=item_5_img_link
 
 *** Settings ***
 Library           SeleniumLibrary
@@ -97,9 +98,9 @@ TC_002_LoginAllPossibleUsers_Edge
         Input Password    id=password    ${password}
         Click Button    id=login-button
         Click Element    id=react-burger-menu-btn
-        Sleep    1 seconds
+        Sleep    100 ms
         Click Element    id=logout_sidebar_link
-        Sleep    3 seconds
+        Sleep    300 ms
     END
     Close Browser
 
@@ -121,9 +122,9 @@ TC_002_LoginAllPossibleUsers_Chrome
         Input Password    id=password    ${password}
         Click Button    id=login-button
         Click Element    id=react-burger-menu-btn
-        Sleep    1 seconds
+        Sleep    100 ms
         Click Element    id=logout_sidebar_link
-        Sleep    3 seconds
+        Sleep    300 ms
     END
     Close Browser
 
@@ -141,7 +142,8 @@ TC_003_LoginFail
     ...    Pass Criteria: Lack of succesfull login and of wrong users on both browsers.
     [Tags]    Login
     GoToHomePage
-    Run Keyword And Expect Error    Epic sadface: Sorry, this user has been locked out.    LoginBadUser
+    LoginBadUser
+    Should Contain    class=error-message-container error    name=Epic sadface: Sorry, this user has been locked out.
     Close Browser
 
 TC_004_AddingItemToCart_Edge
@@ -160,11 +162,11 @@ TC_004_AddingItemToCart_Edge
     [Tags]    Cart    Edge
     GoToHomePage
     Login
-    Sleep    1 second
+    Sleep    100 ms
     Click Button    id=add-to-cart-sauce-labs-backpack
-    Sleep    1 second
+    Sleep    100 ms
     Click Element    id=shopping_cart_container
-    Sleep    1 second
+    Sleep    1 second100 ms
     Click Button    id=remove-sauce-labs-backpack
     Logout
     Close Browser
@@ -186,11 +188,11 @@ TC_004_AddingItemToCart_Chrome
     [Tags]    Cart    Chrome
     GoToHomePage
     Login
-    Sleep    1 second
+    Sleep    100 ms
     Click Button    id=add-to-cart-sauce-labs-backpack
-    Sleep    1 second
+    Sleep    100 ms
     Click Element    id=shopping_cart_container
-    Sleep    1 second
+    Sleep    1 second100 ms
     Click Button    id=remove-sauce-labs-backpack
     Logout
     Close Browser
@@ -213,13 +215,13 @@ TC_005_AddingMultipleItemsToCart_Edge
     Login
     FOR    ${item}    IN    @{items_add}
         Click Button    ${item}
-        Sleep    1 second
+        Sleep    100 ms
     END
     Click Element    id=shopping_cart_container
-    Sleep    1 second
+    Sleep    100 ms
     FOR    ${item}    IN    @{items_remove}
         Click Button    ${item}
-        Sleep    1 second
+        Sleep    100 ms
     END
     Logout
     Close Browser
@@ -242,13 +244,13 @@ TC_005_AddingMultipleItemsToCart_Chrome
     Login
     FOR    ${item}    IN    @{items_add}
         Click Button    ${item}
-        Sleep    1 second
+        Sleep    100 ms
     END
     Click Element    id=shopping_cart_container
-    Sleep    1 second
+    Sleep    100 ms
     FOR    ${item}    IN    @{items_remove}
         Click Button    ${item}
-        Sleep    1 second
+        Sleep    100 ms
     END
     Logout
     Close Browser
@@ -324,5 +326,73 @@ TC_006_OrderingAnItem_Chrome
     Click Button    id=finish
     Sleep    500ms
     Click Button    id=back-to-products
+    Logout
+    Close Browser
+
+TC_007_EnterProdcutsPages
+    [Documentation]    Test Objective: Check all items subpages and adding items to cart on subpage
+    ...
+    ...    Test steps:
+    ...    1. Open https://www.saucedemo.com/ on Edge
+    ...    2. Login standard_user
+    ...    3. Click on item image
+    ...    4. Enter subpage
+    ...    5. Add item to cart
+    ...    6. Go back to main page
+    ...    7. Reapeat steps 3-6 on all items
+    ...    8. Remove all items from cart from main page
+    ...    9. Logout
+    ...    10. Close browser
+    ...
+    ...    Pass Criteria: Succesfull enering all subpages via images, adding items to cart on subpage and removing them on main page
+    [Tags]    Edge    Subpage    Cart
+    GoToHomePage
+    Login
+    FOR    ${item}    IN    @{imagesid}
+    Click Element    ${item}
+    Sleep    100 ms
+    Click Button    id=add-to-cart
+    Sleep    100ms
+    Click Button    id=back-to-products
+    END
+    FOR    ${item}    IN    @{items_remove}
+        Click Button    ${item}
+        Sleep    100 ms
+    END
+    Logout
+    Close Browser
+
+TC_008_AddItemsToCartThenRemoveThemInSubpages
+    [Documentation]    Test Objective: Check all items subpages and adding items to caart on main page and remove them from cart on subpage
+    ...
+    ...    Test steps:
+    ...    1. Open https://www.saucedemo.com/ on Edge
+    ...    2. Login standard_user
+    ...    3. Add all items to cart
+    ...    4. Enter subpage
+    ...    5. Remove item from cart
+    ...    6. Go back to main page
+    ...    7. Reapeat steps 4-6 on all items
+    ...    8. Enter Cart
+    ...    9. Verify that cart is empty
+    ...    9. Logout
+    ...    10. Close browser
+    ...
+    ...    Pass Criteria: Succesfull adding all items to cart on main page then enering all subpages via images, removing items from cart on subpage and confirming that cart is empty.
+    [Tags]    Edge    Subpage    Cart
+    GoToHomePage
+    Login
+    FOR    ${item}    IN    @{items_add}
+        Click Button    ${item}
+        Sleep    1 second
+    END
+    FOR    ${item}    IN    @{imagesid}
+    Click Element    ${item}
+    Sleep    100 ms
+    Click Button    id=remove
+    Sleep    100ms
+    Click Button    id=back-to-products
+    END
+    Page Should Not Contain    Remove
     Logout
     Close Browser
