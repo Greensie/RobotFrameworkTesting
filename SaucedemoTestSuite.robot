@@ -52,6 +52,8 @@ ${bad_user}       locked_out_user
 @{items_remove}    id=remove-sauce-labs-backpack    id=remove-sauce-labs-bike-light    id=remove-sauce-labs-onesie    id=remove-sauce-labs-bolt-t-shirt    id=remove-sauce-labs-fleece-jacket
 @{TestUser}       John    Doe    00-999
 @{imagesid}       id=item_0_img_link    id=item_1_img_link    id=item_2_img_link    id=item_3_img_link    id=item_4_img_link    id=item_5_img_link
+@{items_names}    Sauce Labs Bike Light    Sauce Labs Bolt T-Shirt    Sauce Labs Onesie    Test.allTheThings() T-Shirt (Red)    Sauce Labs Backpack    Sauce Labs Fleece Jacket
+@{subpages_names}    www.saucedemo.com/inventory-item.html?id=0    www.saucedemo.com/inventory-item.html?id=1    www.saucedemo.com/inventory-item.html?id=2    www.saucedemo.com/inventory-item.html?id=3    www.saucedemo.com/inventory-item.html?id=4    www.saucedemo.com/inventory-item.html?id=5
 
 *** Settings ***
 Library           SeleniumLibrary
@@ -394,5 +396,33 @@ TC_008_AddItemsToCartThenRemoveThemInSubpages
     Click Button    id=back-to-products
     END
     Page Should Not Contain    Remove
+    Logout
+    Close Browser
+
+TC_009_TestThatAllPhotosDirectToGoodSubpage
+    [Documentation]    Test Objective: Check all items photos redirect to correct subpage
+    ...
+    ...    Test steps:
+    ...    1. Open https://www.saucedemo.com/ on Edge
+    ...    2. Login standard_user
+    ...    3. Click on item photo
+    ...    4. Enter subpage
+    ...    5. Check if page contain item name
+    ...    6. Go back to main page
+    ...    7. Reapeat steps 3-6 on all items
+    ...    8. Logout
+    ...    9. Close browser
+    ...
+    ...    Pass Criteria: Succesfull checking all subpages that contain proper items.
+    [Tags]    Edge    Items    Subpage
+    GoToHomePage
+    Login
+    FOR    ${i}    IN RANGE    5
+    Click Element    ${imagesid}[${i}]
+    Sleep    100 ms
+    Page Should Contain    ${items_names}[${i}]
+    Sleep    100 ms
+    Click Button    id=back-to-products
+    END
     Logout
     Close Browser
