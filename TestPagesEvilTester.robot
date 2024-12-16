@@ -41,17 +41,17 @@ TC_002_ElementAttributesExamples
 
 TC_003_FindByPlayground
     [Setup]    GoToTestPageEdge
-    ${passcount}=    Set Variable    0
-    FOR    ${i}    IN RANGE    26    50
-    ${a}=    Set Variable    a
-    ${pName}=    Set Variable    pName
-    ${id}=    Set Variable    ${a}${i}
-    ${name}=    Set Variable    ${pName}${i}
+    Click Element    id=findbytest
+    ${p}=    Set Variable    //div[@id='div1']/p[@id='p
+    ${pName}=    Set Variable    //div[@id='div1']/p[@name='pName
+    ${closure}=    Set Variable    ']
+    FOR    ${i}    IN RANGE    1    25
+    ${id}=    Set Variable    ${p}${i}${closure}
+    ${name}=    Set Variable    ${pName}${i}${closure}
     Sleep    100 ms
-    ${str1}=    Get Text    id=${id}
-    ${str2}=    Get Text    name=${name}
-    IF    ${str1}    ==    ${str2}
-        ${passcount+1}
+    ${str1}=    Get Text    ${id}
+    ${str2}=    Get Text    ${name}
+    IF    '${str1}==${str2}'
+        Log To Console    OK${str1}
     END
-    Log To Console    ${passcount}
-    [Teardown]    CleanupAfterTest
+    END
