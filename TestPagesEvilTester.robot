@@ -4,7 +4,7 @@ Language: En
 GoToTestPageEdge
     Open Browser    ${url}    edge
 
-GoToTestPageEdgeChrome
+GoToTestPageChrome
     Open Browser    ${url}    Chrome
 
 GoToMainPageAndCloseBrowser
@@ -78,4 +78,54 @@ TC_003_FindByPlayground
     ${str1}=    Get Text    ${id}
     ${str2}=    Get Text    ${name}
     END
+    [Teardown]    CleanupAfterTest
+
+TC_004_HTMLTABLETag
+    [Documentation]    Test Objective: Get text from a HTML table displayed on page
+    ...
+    ...    Test steps:
+    ...    [SETUP] Open Browser and enter https://testpages.eviltester.com/styled/index.html
+    ...    1. Click element HTML TABLE Tag
+    ...    2. Check num of rows
+    ...    3. Get data for name and amount
+    ...    4. Log the data
+    ...    5. Reapeat steps 3-4 for every row found
+    ...    [TEARDOWN]
+    ...    Clowse Browser
+    [Setup]    GoToTestPageEdge
+    Click Element    id=tablestest
+    Sleep    300ms
+    ${rows}=    Get Element Count    //table[@id='mytable']/tbody/tr
+    ${locator}=    Set Variable    //table[@id='mytable']/tbody/tr[
+    ${name_closing}=    Set Variable    ]/td[1]
+    ${amount_closing}=    Set Variable    ]/td[2]
+    FOR    ${row_num}    IN RANGE    2    ${rows+1}
+        ${name_cell}=    Get Text    ${locator}${row_num}${name_closing}
+        ${amount_cell}=    Get Text    ${locator}${row_num}${amount_closing}
+        Log    ${row_num}
+        Log    ${name_cell}
+        Log    ${amount_cell}
+    END
+    [Teardown]    CleanupAfterTest
+
+TC_004_HTMLTABLETagBasic
+    [Documentation]    Test Objective: Get text from a HTML table displayed on page - Debug Tool
+    ...
+    ...    Test steps:
+    ...    [SETUP] Open Browser and enter https://testpages.eviltester.com/styled/index.html
+    ...    1. Click element HTML TABLE Tag
+    ...    2. Check num of rows
+    ...    3. Get name data
+    ...    4. Get amount data
+    ...    5. Log the data
+    ...    [TEARDOWN]
+    ...    Clowse Browser
+    [Setup]    GoToTestPageEdge
+    Click Element    id=tablestest
+    Sleep    300ms
+    ${rows}=    Get Element Count    //table[@id='mytable']/tbody/tr
+    ${name_cell}=    Get Text    //table[@id='mytable']/tbody/tr[2]/td[1]
+    ${amount_cell}=    Get Text    //table[@id='mytable']/tbody/tr[2]/td[2]
+    Log    ${name_cell}
+    Log    ${amount_cell}
     [Teardown]    CleanupAfterTest
