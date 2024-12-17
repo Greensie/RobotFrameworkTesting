@@ -16,6 +16,8 @@ CleanupAfterTest
 
 *** Variables ***
 ${url}            https://testpages.eviltester.com/styled/index.html
+${jsondatatochange}    [{"name" : "John", "age" : 111}, {"name": "Jose", "age" : 51}]
+@{expected_result}    Bob    George    John    Jose
 
 *** Settings ***
 Library           SeleniumLibrary
@@ -92,6 +94,7 @@ TC_004_HTMLTABLETag
     ...    5. Reapeat steps 3-4 for every row found
     ...    [TEARDOWN]
     ...    Clowse Browser
+    [Tags]    Table
     [Setup]    GoToTestPageEdge
     Click Element    id=tablestest
     Sleep    300ms
@@ -120,6 +123,7 @@ TC_004_HTMLTABLETagBasic
     ...    5. Log the data
     ...    [TEARDOWN]
     ...    Clowse Browser
+    [Tags]    Table
     [Setup]    GoToTestPageEdge
     Click Element    id=tablestest
     Sleep    300ms
@@ -128,4 +132,59 @@ TC_004_HTMLTABLETagBasic
     ${amount_cell}=    Get Text    //table[@id='mytable']/tbody/tr[2]/td[2]
     Log    ${name_cell}
     Log    ${amount_cell}
+    [Teardown]    CleanupAfterTest
+
+TC_005_Dynamic HTML TABLE Tag
+    [Documentation]    Test Objective: Get text from a HTML dinamic table displayed on page, modify table and get changed data
+    ...
+    ...    Test steps:
+    ...    [SETUP] Open Browser and enter https://testpages.eviltester.com/styled/index.html
+    ...    1. Click element Dynamic HTML TABLE Tag
+    ...    2. Check num of rows
+    ...    3. Get name data
+    ...    4. Get age data
+    ...    5. Compare name data to the expected data
+    ...    6. Reapeat steps 3-5 for all rows
+    ...    7. Reel out table menu
+    ...    8. Change table data via json textarea
+    ...    9. Click the button to refresh table
+    ...    10. Get name data
+    ...    11. Get age data
+    ...    12. Compare name data to the expected data
+    ...    13. Reapeat steps 10-12 for all rows
+    ...    14. Imput new table caption
+    ...    15. Click the button to refresh table
+    ...    16. Compare table caption if it equals new value
+    ...
+    ...    [TEARDOWN]
+    ...    Clowse Browser
+    [Tags]    Table
+    [Setup]    GoToTestPageChrome
+    Click Element    id=dynamictablestest
+    Sleep    300ms
+    ${rows}=    Get Element Count    //table[@id='dynamictable']/tr
+    ${locator}=    Set Variable    //table[@id='dynamictable']/tr[
+    ${name_closing}=    Set Variable    ]/td[1]
+    ${age_closing}=    Set Variable    ]/td[2]
+    ${table_caption}=    Get Text    //table/caption
+    Should Be Equal    ${table_caption}    Dynamic Table
+    FOR    ${row_num}    IN RANGE    2    ${rows+1}
+        ${name_cell}=    Get Text    ${locator}${row_num}${name_closing}
+        ${amount_cell}=    Get Text    ${locator}${row_num}${age_closing}
+        Should Be Equal    ${name_cell}    ${expected_result}[${row_num-2}]
+    END
+    Click Element    //details/summary
+    Sleep    500 ms
+    Input Text    //details/div/p/textarea[@id='jsondata']    ${jsondatatochange}
+    Click Button    //details/div/button
+    Sleep    500 ms
+    FOR    ${row_num}    IN RANGE    2    ${rows+1}
+        ${name_cell}=    Get Text    ${locator}${row_num}${name_closing}
+        ${amount_cell}=    Get Text    ${locator}${row_num}${age_closing}
+        Should Be Equal    ${name_cell}    ${expected_result}[${row_num}]
+    END
+    Input Text    //details/div/p/input[@id='caption']    Different Table
+    Click Button    //details/div/button
+    ${table_caption2}    Get Text    //table/caption
+    Should Be Equal    ${table_caption2}    Different Table
     [Teardown]    CleanupAfterTest
