@@ -82,7 +82,7 @@ TC_003_FindByPlayground
     END
     [Teardown]    CleanupAfterTest
 
-TC_004_HTMLTABLETag
+TC_004_HTMLTableTag
     [Documentation]    Test Objective: Get text from a HTML table displayed on page
     ...
     ...    Test steps:
@@ -111,7 +111,7 @@ TC_004_HTMLTABLETag
     END
     [Teardown]    CleanupAfterTest
 
-TC_004_HTMLTABLETagBasic
+TC_004_HTMLTableTagBasic
     [Documentation]    Test Objective: Get text from a HTML table displayed on page - Debug Tool
     ...
     ...    Test steps:
@@ -134,7 +134,7 @@ TC_004_HTMLTABLETagBasic
     Log    ${amount_cell}
     [Teardown]    CleanupAfterTest
 
-TC_005_Dynamic HTML TABLE Tag
+TC_005_DynamicHTMLTableTag
     [Documentation]    Test Objective: Get text from a HTML dinamic table displayed on page, modify table and get changed data
     ...
     ...    Test steps:
@@ -155,7 +155,6 @@ TC_005_Dynamic HTML TABLE Tag
     ...    14. Imput new table caption
     ...    15. Click the button to refresh table
     ...    16. Compare table caption if it equals new value
-    ...
     ...    [TEARDOWN]
     ...    Clowse Browser
     [Tags]    Table
@@ -187,4 +186,78 @@ TC_005_Dynamic HTML TABLE Tag
     Click Button    //details/div/button
     ${table_caption2}    Get Text    //table/caption
     Should Be Equal    ${table_caption2}    Different Table
+    [Teardown]    CleanupAfterTest
+
+TC_006_AlertBoxExamples
+    [Documentation]    Test Objective: Click buttons and handle alerts
+    ...
+    ...    Test steps:
+    ...    [SETUP] Open Browser and enter https://testpages.eviltester.com/styled/index.html
+    ...    1. Click element Alert Box Examples
+    ...    2. Click button 'Show alert box'
+    ...    3. Wait for alert
+    ...    4. Handle alert with accept
+    ...    5. Get text confirming the alert was handled proper way
+    ...    6. Reapeat steps for 'Show confirm box' button and 'Show propt box'
+    ...    [TEARDOWN]
+    ...    Clowse Browser
+    [Tags]    AlertBox
+    [Setup]    GoToTestPageChrome
+    Click Element    id=alerttest
+    Sleep    100ms
+    Click Button    //div/input[@id='alertexamples']
+    Sleep    200ms
+    Alert Should Be Present    action=ACCEPT    timeout=100ms
+    ${explanation}=    Get Text    //div/p[@id='alertexplanation']
+    ${explenation_expected}=    Set Variable    You triggered and handled the alert dialog
+    Should Be Equal    ${explanation}    ${explenation_expected}
+    Sleep    200ms
+    Click Button    //div/input[@id='confirmexample']
+    Alert Should Be Present    action=ACCEPT    timeout=100ms
+    ${explanation}=    Get Text    //div/p[@id='confirmexplanation']
+    ${explenation_expected}=    Set Variable    You clicked OK, confirm returned true.
+    Should Be Equal    ${explanation}    ${explenation_expected}
+    Sleep    200ms
+    Click Button    //div/input[@id='promptexample']
+    Alert Should Be Present    action=ACCEPT    timeout=100ms
+    ${explanation}=    Get Text    //div/p[@id='promptexplanation']
+    ${explenation_expected}=    Set Variable    You clicked OK. 'prompt' returned change me
+    Should Be Equal    ${explanation}    ${explenation_expected}
+    [Teardown]    CleanupAfterTest
+
+TC_006_AlertBoxExamplesNegative
+    [Documentation]    Test Objective: Click buttons and handle alerts
+    ...
+    ...    Test steps:
+    ...    [SETUP] Open Browser and enter https://testpages.eviltester.com/styled/index.html
+    ...    1. Click element Alert Box Examples
+    ...    2. Click button 'Show alert box'
+    ...    3. Wait for alert
+    ...    4. Handle alert with dissmis
+    ...    5. Get text confirming the alert was handled proper way
+    ...    6. Reapeat steps for 'Show confirm box' button and 'Show propt box'
+    ...    [TEARDOWN]
+    ...    Clowse Browser
+    [Tags]    AlertBox    Negative
+    [Setup]    GoToTestPageChrome
+    Click Element    id=alerttest
+    Sleep    100ms
+    Click Button    //div/input[@id='alertexamples']
+    Sleep    200ms
+    Alert Should Be Present    action=ACCEPT    timeout=100ms
+    ${explanation}=    Get Text    //div/p[@id='alertexplanation']
+    ${explenation_expected}=    Set Variable    You triggered and handled the alert dialog
+    Should Be Equal    ${explanation}    ${explenation_expected}
+    Sleep    200ms
+    Click Button    //div/input[@id='confirmexample']
+    Alert Should Be Present    action=DISMISS    timeout=100ms
+    ${explanation}=    Get Text    //div/p[@id='confirmexplanation']
+    ${explenation_expected}=    Set Variable    You clicked Cancel, confirm returned false.
+    Should Be Equal    ${explanation}    ${explenation_expected}
+    Sleep    200ms
+    Click Button    //div/input[@id='promptexample']
+    Alert Should Be Present    action=DISMISS    timeout=100ms
+    ${explanation}=    Get Text    //div/p[@id='promptexplanation']
+    ${explenation_expected}=    Set Variable    You clicked Cancel. 'prompt' returned null
+    Should Be Equal    ${explanation}    ${explenation_expected}
     [Teardown]    CleanupAfterTest
