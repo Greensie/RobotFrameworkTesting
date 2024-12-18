@@ -261,3 +261,35 @@ TC_006_AlertBoxExamplesNegative
     ${explenation_expected}=    Set Variable    You clicked Cancel. 'prompt' returned null
     Should Be Equal    ${explanation}    ${explenation_expected}
     [Teardown]    CleanupAfterTest
+
+TC_007_FakeAlertBoxExamples
+    [Documentation]    Test Objective: Click buttons and handle alerts
+    ...
+    ...    Test steps:
+    ...    [SETUP] Open Browser and enter https://testpages.eviltester.com/styled/index.html
+    ...    1. Click element Alert Box Examples
+    ...    2. Click button 'Show fake alert box'
+    ...    3. Wait for alert
+    ...    4. Click fake alert box to close it
+    ...    5. Click button 'Show modal dialog'
+    ...    6. Wait for alert
+    ...    7. Click fake alert box to close it
+    ...    [TEARDOWN]
+    ...    Clowse Browser
+    [Tags]    FakeAlerts
+    [Setup]    GoToTestPageChrome
+    Click Element    //a[@id='fakealerttest']
+    Wait Until Page Contains    Fake Alert Box Examples    200ms
+    Click Button    //input[@class='styled-click-button']
+    Wait Until Element Is Visible    //div[@class='dialog-actions']/button[@id='dialog-ok']    200ms
+    Click Button    //div[@class='dialog-actions']/button[@id='dialog-ok']
+    Sleep    50ms
+    Click Button    //input[@id='modaldialog']
+    Wait Until Element Is Visible    //div[@class='dialog-actions']/button[@id='dialog-ok']    200ms
+    Click Button    //div[@class='dialog-actions']/button[@id='dialog-ok']
+    [Teardown]    CleanupAfterTest
+
+TC_008_NestedFramesExample
+    [Setup]    GoToTestPageChrome
+    Click Element    //a[@id='fakealerttest']
+    [Teardown]    CleanupAfterTest
